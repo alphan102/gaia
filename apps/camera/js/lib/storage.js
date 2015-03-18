@@ -162,7 +162,7 @@ Storage.prototype.createVideoFilepath = function(done) {
 Storage.prototype.onStorageChange = function(e) {
   debug('state change: %s', e.reason);
   var value = e.reason;
-
+console.log('alphan-reason:' + e.reason + ' path:' + e.path);
   switch (value) {
     case 'deleted':
       // Emit an `itemdeleted` event to

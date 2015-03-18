@@ -25,6 +25,9 @@ suite('lib/storage', function() {
     this.picture.removeEventListener = sinon.spy();
     this.picture.delete = sinon.stub().returns(this.picture);
 
+    this.setState = sinon.spy();
+    this.onStorageChange = sinon.spy();
+
     // Stub getDeviceStorage
     if (!navigator.getDeviceStorage) { navigator.getDeviceStorage = function() {}; }
     this.sandbox.stub(navigator, 'getDeviceStorage');
@@ -60,6 +63,8 @@ suite('lib/storage', function() {
     this.storage = new this.Storage(options);
     // Storage is a singleton. This forces reconfiguration for each suite
     this.storage.configure();
+
+    this.sandbox.spy(this.storage, 'emit');
   });
 
   teardown(function() {
@@ -71,6 +76,20 @@ suite('lib/storage', function() {
     test('Should listen for change events', function() {
       assert.isTrue(this.picture.addEventListener.calledWith('change'));
       assert.isTrue(navigator.mozSettings.addObserver.called);
+    });
+    test('Should handle change event with reason : available, shared, unavailable', function() {
+      //this.storage.emit.calledWith('change', { reason: 'available'});withArgs
+      this.storage.emit.calledWith('change');
+      //assert.isTrue(this.setState.called);
+      assert.isTrue(this.onStorageChange.called);
+
+      //this.storage.emit.calledWith('change', { reason: 'unavailable'});
+      //assert.isTrue(this.setState.called);
+      //assert.isTrue(this.storage.onStorageChange.called);
+
+      //this.storage.emit.calledWith('change', { reason: 'shared'});
+      //assert.isTrue(this.setState.called);
+      //assert.isTrue(this.storage.onStorageChange.called);
     });
   });
 
